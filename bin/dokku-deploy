@@ -55,11 +55,13 @@ fi
 
 if [ "$COMMAND" = "review-apps:destroy" ]; then
   log-info "Destroying review app '${REVIEW_APP_NAME}'"
+#  ssh "$ssh_remote" -- postgres:unlink "$REVIEW_APP_NAME" "$REVIEW_APP_NAME" --no-restart
+#  ssh "$ssh_remote" -- --force postgres:destroy "$REVIEW_APP_NAME"
   ssh "$ssh_remote" -- --force apps:destroy "$REVIEW_APP_NAME"
   if [ -f "bin/ci-post-delete" ]; then
     log-info "Executing bin/ci-post-delete script"
     chmod +x bin/ci-post-delete
-    APP_NAME="$remote_app_name" IS_REVIEW_APP="$is_review_app" SSH_REMOTE="$ssh_remote" bin/ci-post-delete
+    APP_NAME="$REVIEW_APP_NAME" IS_REVIEW_APP="$is_review_app" SSH_REMOTE="$ssh_remote" bin/ci-post-delete
   fi
   exit 0
 fi
